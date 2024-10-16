@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap');
+
+:root {
+  --clr-yellow: #ffd741;
+  --clr-light-yellow: #fff8de;
+  --clr-blue: #192a56;
+  --clr-light-blue: #f8f8f8;
+  --clr-white: #fffcf2;
+  --green: #27ae60;
+  --clr-red: hsl(360, 71%, 66%);
+  --clr-green: hsl(125, 71%, 66%);
+  --clr-light-grey: rgb(168, 168, 168);
+  --clr-dark-grey: #555;
+  --transition: all 0.3s linear;
+  --spacing: 0.1rem;
+  --radius: 0.25rem;
+  --light-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+  --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  --max-width: 90%;
+}
+
+*,
+::after,
+::before {
+  font-family: 'Nunito', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  outline: none;
+  border: none;
+}
+
+html {
+  font-size: 60%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+.sidebar-wrapper.show {
+  visibility: visible;
+  z-index: 2;
+  transform: scale(1);
+}
+.pagination {
+  margin: 20px auto 80px;
+}
+
+.pagination span a {
+  color: var(--clr-blue);
+}
+
+.pagination span {
+  display: inline-block;
+  border: 1px solid var(--clr-blue);
+  margin: 5px;
+  width: 4rem;
+  height: 4rem;
+  text-align: center;
+  cursor: pointer;
+  line-height: 4rem;
+  color: var(--clr-blue);
+  transition: var(--transition);
+  font-size: 1.7rem;
+}
+
+.pagination span:hover {
+  background: var(--clr-yellow);
+}
+.pagination .active {
+  background: var(--clr-yellow);
+}
+.submenu.show {
+  display: block;
+}
+
+p {
+  color: var(--clr-grey);
+}
+
+.submenu::before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid var(--clr-white);
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.submenu-center {
+  display: grid;
+  gap: 0.25rem 2rem;
+}
+.submenu.show {
+  display: block;
+}
+
+label {
+  font-size: 2.2rem;
+  margin: 0.5rem 0;
+}
+.form {
+  width: 100%;
+  margin: 0 auto;
+}
+p,
+li {
+  font-size: 2rem;
+  letter-spacing: var(--spacing);
+}
+@media (min-width: 800px) {
+  p,
+  li {
+    font-size: 1.7rem;
+    letter-spacing: var(--spacing);
+  }
+}
+.alert-danger {
+  color: var(--clr-red);
+}
+.alert-success {
+  color: var(--clr-green);
+}
+
+.btn {
+  display: inline-block;
+  background: var(--clr-yellow);
+  color: var(--clr-blue);
+  padding: 0.8rem 3rem;
+  margin: 1rem 0;
+  border-radius: 1.7rem;
+  transition: var(--transition);
+  cursor: pointer;
+  outline: none;
+  border: none;
+  font-size: 1.7rem;
+}
+
+button {
+  cursor: pointer;
+  border-radius: 0.25rem;
+  background: none;
+}
+
+.btn:hover,
+.btn:focus {
+  background: var(--clr-blue);
+  color: var(--clr-white);
+  letter-spacing: 0.1rem;
+}
+
+.sub-heading {
+  text-align: center;
+  color: var(--clr-yellow);
+  font-size: 2rem;
+  padding-top: 1rem;
+}
+
+.heading {
+  text-align: center;
+  color: var(--clr-blue);
+  font-size: 2.5rem;
+  padding-bottom: 4rem;
+  text-transform: uppercase;
+}
+
+.form > div {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem 0;
+}
+
+input:focus,
+input:active {
+  outline: none;
+}
+
+input,
+select {
+  border: 1px solid var(--clr-light-grey);
+  padding: 0 0 0 0.6em;
+  background: none;
+  width: 100%;
+  border-radius: 0.25em;
+  letter-spacing: var(--spacing);
+  outline: none;
+  height: 4rem;
+  font-size: 1.7rem;
+}
+
+.section-center {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+textarea {
+  width: 100%;
+  background: none;
+  height: 10em;
+  border: 1px solid var(--clr-light-grey);
+  letter-spacing: var(--spacing);
+  border-radius: 0.25em;
+  outline: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  letter-spacing: var(--spacing);
+  text-transform: capitalize;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+.table {
+  font-size: 1.7rem;
+  width: 100%;
+  border-collapse: collapse;
+}
+.table tbody tr:nth-of-type(odd) {
+  background: var(--clr-light-blue);
+}
+td,
+th {
+  text-align: center;
+  border: 0.1rem solid #e4e4e4;
+  padding: 1rem;
+}
+
+th {
+  background: var(--clr-blue);
+  color: var(--clr-white);
+}
+
+@media screen and (min-width: 800px) {
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1;
+  }
+  .form,
+  table {
+    width: 50%;
+  }
+}
+
+@media (min-width: 991px) {
+  html {
+    font-size: 62.5%;
+  }
+}
+@media (min-width: 450px) {
+  html {
+    font-size: 55%;
+  }
+
+  .heading {
+    font-size: 3rem;
+  }
+}
