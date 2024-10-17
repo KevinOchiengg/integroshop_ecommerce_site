@@ -19,7 +19,15 @@ export default defineConfig({
     manifest: true,
     rollupOptions: {
       // overwrite default .html entry
-      input: '/path/to/main.js',
+      input: 'index.html',
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // Group all node_modules into a separate vendor chunk
+            return 'vendor'
+          }
+        },
+      },
     },
   },
 })
