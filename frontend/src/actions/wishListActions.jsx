@@ -6,7 +6,9 @@ import {
 } from '../constants/wishListConstant'
 
 export const addToWishList = (productId, qty) => async (dispatch, getState) => {
-  const { data } = await Axios.get(`/api/products/${productId}`)
+  const { data } = await Axios.get(
+    `https://integroshop-backend.onrender.com/api/products/${productId}`
+  )
   const {
     wishList: { wishListItems },
   } = getState()
