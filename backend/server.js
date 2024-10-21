@@ -15,8 +15,9 @@ dotenv.config()
 const app = express()
 const corsOptions = {
   origin: 'https://integroshop-frontend.onrender.com/',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }
-app.use(cors(corsOptions))
+app.use(cors())
 // app.use()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
