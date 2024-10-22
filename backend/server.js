@@ -1,5 +1,5 @@
 import http from 'http'
-import { Server } from 'socket.io'
+import Server from 'socket.io'
 import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
@@ -13,80 +13,60 @@ import cors from 'cors'
 dotenv.config()
 
 const app = express()
-
-// CORS Configuration
 const corsOptions = {
   origin: [
-    'https://integroshop-frontend.onrender.com',
-    'http://localhost:3000',
-  ], // Allow hosted and local development frontend
+    'https://integroshop-frontend.onrender.com', // Production frontend
+    'http://localhost:3000', // Local development
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true, // Allow credentials (e.g., cookies or auth headers)
+  credentials: true, // Include credentials if necessary (e.g., for sessions)
 }
 app.use(cors(corsOptions))
 
+// app.use()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// MongoDB Connection
 mongoose.set('strictQuery', false)
 mongoose
-  .connect(process.env.MONGODB_URL || 'mongodb://localhost/integroshops')
+  .connect(process.env.MONGODB_URL || 'mongodb://localhost/integroshops', {
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
+  })
   .then(() => {
     console.log('Connected to MongoDB database!')
   })
   .catch((error) => {
-    console.error(`Error connecting to MongoDB database: ${error.message}`)
+    console.log(`Error connecting to MongoDB database: ${error}`)
   })
 
-// Routers
 app.use('/api/uploads', uploadRouter)
 app.use('/api/users', userRouter)
 app.use('/api/products', productRouter)
 app.use('/api/orders', orderRouter)
-
-// PayPal & Google Configurations
 app.get('/api/config/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb')
 })
-
 app.get('/api/config/google', (req, res) => {
   res.send(process.env.GOOGLE_API_KEY || '')
 })
-
-// Static File Handling (for serving uploads)
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+app.use(express.static(path.join(__dirname, '/frontend/build')))
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
+)
 
-// Handle production static files (Frontend Build)
-// Serve frontend build files if you're hosting them with the backend (optional)
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '/frontend/build')))
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'))
-  })
-} else {
-  app.get('/', (req, res) => {
-    res.send('API is running...')
-  })
-}
-
-// Error Handling Middleware
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message })
 })
 
-// Set up Socket.io for Real-time Features
 const port = process.env.PORT || 5000
 const httpServer = http.Server(app)
-const io = new Server(httpServer, { cors: { origin: '*' } }) // Allow socket.io connections from any origin
-
+const io = new Server(httpServer, { cors: { origin: '*' } })
 const users = []
-
 io.on('connection', (socket) => {
   console.log('connection', socket.id)
-
   socket.on('disconnect', () => {
     const user = users.find((x) => x.socketId === socket.id)
     if (user) {
@@ -98,7 +78,6 @@ io.on('connection', (socket) => {
       }
     }
   })
-
   socket.on('onLogin', (user) => {
     const updatedUser = {
       ...user,
@@ -154,7 +133,6 @@ io.on('connection', (socket) => {
   })
 })
 
-// Start the server
 httpServer.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`)
+  console.log(`Serve at http://localhost:${port}`)
 })
