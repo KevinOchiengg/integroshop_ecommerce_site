@@ -77,7 +77,7 @@ export const signout = () => (dispatch) => {
   localStorage.removeItem('wishListItems')
   localStorage.removeItem('shippingAddress')
   dispatch({ type: USER_SIGNOUT })
-  document.location.href = 'https://integroshop-frontend.onrender.com/signin'
+  document.location.href = 'https://integroshop-frontend.onrender.com/'
 }
 export const detailsUser = (userId) => async (dispatch, getState) => {
   dispatch({ type: USER_DETAILS_REQUEST, payload: userId })
