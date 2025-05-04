@@ -8,7 +8,7 @@ const Hero = () => {
       <div className='section__center'>
         <div className='hero__container'>
           <h3>
-            Welcome To <span>Integro</span> <br />
+            Welcome To <span>Dukawa</span> <br />
             Wears<span>.</span>
           </h3>
           <p>

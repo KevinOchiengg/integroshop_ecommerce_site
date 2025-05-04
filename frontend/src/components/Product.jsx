@@ -54,9 +54,9 @@ const Wrapper = styled.div`
   }
 
   .box .image {
-    height: 30rem;
+    height: 18rem;
     width: 100%;
-    padding: 1.5rem;
+    padding: 1rem;
     overflow: hidden;
     position: relative;
   }
@@ -83,13 +83,13 @@ const Wrapper = styled.div`
     position: absolute;
     top: 2.5rem;
     right: 2.5rem;
-    height: 5rem;
-    width: 5rem;
+    height: 3rem;
+    width: 3rem;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.6rem;
     background: var(--clr-white);
     border-radius: 50%;
     box-shadow: var(--light-shadow);
@@ -103,7 +103,7 @@ const Wrapper = styled.div`
   }
 
   .content {
-    padding: 2rem;
+    padding: 1.2rem;
     padding-top: 0;
   }
 
@@ -113,18 +113,23 @@ const Wrapper = styled.div`
 
   .content h3 {
     color: var(--clr-blue);
-    font-size: 2rem;
+    font-size: 1.2rem;
   }
 
   .content p {
     color: var(--clr-dark-grey);
-    font-size: 1.6rem;
-    line-height: 1.5;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .btn{
+    font-size: 1.2rem;
+    padding: 0.6rem 1.6rem;
   }
 
   .content .price {
     color: var(--clr-blue);
     margin-left: 1rem;
-    font-size: 2rem;
+    font-size: 1.2rem;
   }
 `

@@ -56,7 +56,7 @@ const Wrapper = styled.section`
   .rating {
     display: flex;
     align-items: center;
-    font-size: 1.7rem;
+    font-size: 1.2rem;
   }
 
   i:not(:first-child) {
