@@ -8,7 +8,7 @@ import { useGlobalContext } from '../context'
 import { useDispatch, useSelector } from 'react-redux'
 import { signout } from '../actions/userActions'
 import styled from 'styled-components'
-import logo from '../logo.png'
+import logo from '../logo4.png'
 import SearchBar from './SearchBar'
 
 const Navbar = () => {
@@ -50,7 +50,7 @@ const Navbar = () => {
       <div className='nav-center'>
         <div className='logo-container'>
           <Link to='/'>
-            <img src={logo} className='nav-logo' alt='Integrowears' />
+            <img src={logo} className='nav-logo' alt='Dukawa' />
           </Link>
         </div>
 
@@ -141,7 +141,7 @@ const Navbar = () => {
 
 const Wrapper = styled.nav`
   background: var(--clr-blue);
-  height: 8rem;
+  height: 10rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,7 +152,7 @@ const Wrapper = styled.nav`
   z-index: 1;
   border-bottom: 1px solid var(--clr-yellow);
   .nav-logo {
-    width: 8rem;
+    width: 30rem;
   }
 
   .hide-search-Bar {
@@ -257,7 +257,7 @@ const Wrapper = styled.nav`
       max-width: var(--max-width);
     }
     .nav-logo {
-      width: 8rem;
+      width: 22rem;
     }
 
     .toggle-btn {

@@ -89,12 +89,12 @@ export default function ProductListPage(props) {
 
           {loadingCreate && <Loading />}
           {errorCreate && (
-            <Message variant='danger' message='Error occured ' name='hide' />
+            <Message variant='danger' message='error' name='hide' />
           )}
           {loading ? (
             <Loading />
           ) : error ? (
-            <Message variant='danger' message='Error occured ' name='hide' />
+            <Message variant='danger' message='error' name='hide' />
           ) : (
             <>
               <table className='table'>

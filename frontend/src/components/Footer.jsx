@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Chat from './Chat'
 import styled from 'styled-components'
 import { signout } from '../actions/userActions'
-import logo from '../logo.png'
+import logo from '../logo4.png'
 
 const Footer = () => {
   const userSignin = useSelector((state) => state.userSignin)
@@ -29,7 +29,7 @@ const Footer = () => {
           <div className='section-center'>
             <div className='footer-col'>
               <div className='footer_logo'>
-                <h3>INTEGRO</h3>
+                <h3>DUKAWA</h3>
                 <Link to='/'>
                   <img src={logo} alt='Integrowear' />
                 </Link>
@@ -222,7 +222,7 @@ const Wrapper = styled.footer`
   }
 
   img {
-    width: 30%;
+    width: 50%;
     margin: 0 auto;
   }
   .footer-col {
