@@ -84,17 +84,25 @@ export default function ProductListPage(props) {
         <div className='row'>
           {loadingDelete && <Loading />}
           {errorDelete && (
-            <Message variant='danger' message='Error occured ' name='hide' />
+            <Message variant='danger' message={errorDelete} name='hide' />
           )}
 
           {loadingCreate && <Loading />}
           {errorCreate && (
-            <Message variant='danger' message='error' name='hide' />
+            <Message
+              variant='danger'
+              message='something went wrong'
+              name='hide'
+            />
           )}
           {loading ? (
             <Loading />
           ) : error ? (
-            <Message variant='danger' message='error' name='hide' />
+            <Message
+              variant='danger'
+              message='something went wrong'
+              name='hide'
+            />
           ) : (
             <>
               <table className='table'>

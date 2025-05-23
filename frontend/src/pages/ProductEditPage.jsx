@@ -98,7 +98,7 @@ export default function ProductEditPage(props) {
           <h1 className='heading'>edit product</h1>
           {loadingUpdate && <Loading />}
           {errorUpdate && (
-            <Message variant='danger' message='error occured' name='hide' />
+            <Message variant='danger' message='something went wrong' name='hide' />
           )}
           {loading ? (
             <Loading />
@@ -151,7 +151,7 @@ export default function ProductEditPage(props) {
                 {loadingUpload && <LoadingBox />}
                 {errorUpload && (
                   <Message
-                    message='error occured please check our internet connection'
+                    message='Something went wrong. please check our internet connection'
                     variant='danger'
                     name='hide'
                   />

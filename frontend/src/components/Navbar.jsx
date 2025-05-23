@@ -141,7 +141,7 @@ const Navbar = () => {
 
 const Wrapper = styled.nav`
   background: var(--clr-blue);
-  height: 10rem;
+  height: 8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,8 +151,9 @@ const Wrapper = styled.nav`
   width: 100%;
   z-index: 1;
   border-bottom: 1px solid var(--clr-yellow);
+
   .nav-logo {
-    width: 30rem;
+    width: 12rem;
   }
 
   .hide-search-Bar {
@@ -257,7 +258,7 @@ const Wrapper = styled.nav`
       max-width: var(--max-width);
     }
     .nav-logo {
-      width: 22rem;
+      width: 18rem;
     }
 
     .toggle-btn {
