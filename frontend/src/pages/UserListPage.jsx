@@ -40,11 +40,7 @@ export default function UserListPage(props) {
         <div className='row'>
           {loadingDelete && <Loading />}
           {errorDelete && (
-            <Message
-              variant='danger'
-              message='Unable to delete User'
-              name='hide'
-            />
+            <Message variant='danger' message={ errorDelete } name='hide' />
           )}
           {successDelete && (
             <Message
