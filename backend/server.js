@@ -9,10 +9,14 @@ import userRouter from './routers/userRouter.js'
 import orderRouter from './routers/orderRouter.js'
 import uploadRouter from './routers/uploadRouter.js'
 import cors from 'cors'
+import stkRoutes from './routers/stkRoutes.js'
+
+
 
 dotenv.config()
 
 const app = express()
+app.use('/api/stk', stkRoutes)
 const corsOptions = {
   origin: [
     'https://integroshop-frontend.onrender.com', // Production frontend

@@ -14,11 +14,48 @@ export default function PaymentMethodPage(props) {
   }
   const [paymentMethod, setPaymentMethod] = useState('PayPal')
   const dispatch = useDispatch()
-  const submitHandler = (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault()
+    // dispatch(savePaymentMethod(paymentMethod))
+    // navigate('/placeorder')
     dispatch(savePaymentMethod(paymentMethod))
-    navigate('/placeorder')
+
+if (paymentMethod === 'M-Pesa') {
+  const phoneNumber = prompt('Enter your M-Pesa phone number:')
+  if (!phoneNumber) {
+    alert('Phone number is required for M-Pesa payment.')
+    return
   }
+
+  try {
+    const response = await fetch('/api/stk/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: cart.totalPrice,
+        phone: phoneNumber,
+      }),
+    })
+
+    const data = await response.json()
+    if (!response.ok) {
+      alert(`M-Pesa Error: ${data.message || 'STK push failed'}`)
+      return
+    }
+
+    alert('STK Push Sent! Please check your phone to complete the payment.')
+    navigate('/placeorder')
+  } catch (error) {
+    console.error('STK Push Error:', error)
+    alert('Failed to initiate M-Pesa payment.')
+  }
+} else {
+  navigate('/placeorder')
+}
+
+  }
+
+  
   return (
     <Wrapper>
       <div className='section-center'>
@@ -26,6 +63,18 @@ export default function PaymentMethodPage(props) {
         <form className='form' onSubmit={submitHandler}>
           <h3 className='sub-heading'>payment</h3>
           <h1 className='heading'>payment method</h1>
+
+          <div className='payment-method-container'>
+            <input
+              type='radio'
+              id='mpesa'
+              value='M-Pesa'
+              name='paymentMethod'
+              required
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            <label htmlFor='mpesa'>M-Pesa (STK Push)</label>
+          </div>
 
           <div className='payment-method-container'>
             <input
