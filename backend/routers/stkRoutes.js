@@ -60,8 +60,12 @@ router.post('/stkpush', async (req, res) => {
 
     res.send(response.data)
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: 'STK Push Failed', error: err.message })
+    console.error('M-Pesa Error:', err?.response?.data || err.message)
+    res.status(500).send({
+      message: 'STK Push Failed',
+      error: err?.response?.data || err.message,
+    })
+  
   }
 })
 
