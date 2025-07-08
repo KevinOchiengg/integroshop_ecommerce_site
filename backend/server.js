@@ -11,8 +11,6 @@ import uploadRouter from './routers/uploadRouter.js'
 import cors from 'cors'
 import stkRoutes from './routers/stkRoutes.js'
 
-
-
 dotenv.config()
 
 const app = express()
