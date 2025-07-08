@@ -58,7 +58,7 @@ export default function PaymentMethodPage() {
         navigate('/placeorder')
       } catch (error) {
         console.error('STK Push Error:', error)
-        alert('Failed to initiate M-Pesa payment.')
+        alert('Failed to initiate M-Pesa payment.', error)
       }
     } else {
       navigate('/placeorder')

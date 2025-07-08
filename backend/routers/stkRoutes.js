@@ -6,6 +6,9 @@ dotenv.config()
 
 const router = express.Router()
 
+// ✅ This line is CRUCIAL to parse JSON body from frontend
+router.use(express.json())
+
 // Generate Access Token
 const getAccessToken = async () => {
   const { data } = await axios.get(
@@ -23,8 +26,11 @@ const getAccessToken = async () => {
 // STK Push
 router.post('/push', async (req, res) => {
   try {
+    console.log('📥 Incoming STK push request body:', req.body) // DEBUG
+
     const { phone, amount } = req.body
     if (!phone || !amount) {
+      console.log('❌ Missing phone or amount')
       return res.status(400).json({ message: 'Phone or amount missing' })
     }
 
@@ -49,7 +55,7 @@ router.post('/push', async (req, res) => {
       PartyB: process.env.MPESA_SHORTCODE,
       PhoneNumber: phone,
       CallBackURL: process.env.MPESA_CALLBACK_URL,
-      AccountReference: 'INTEGROSHOP',
+      AccountReference: 'DUKAWA',
       TransactionDesc: 'Order Payment',
     }
 
@@ -63,10 +69,14 @@ router.post('/push', async (req, res) => {
       }
     )
 
+    console.log('✅ STK Response:', data)
     res.status(200).json({ message: 'STK Push Sent', data })
   } catch (error) {
-    console.error('STK Error:', error.response?.data || error.message)
-    res.status(500).json({ message: 'STK Push Failed', error: error.message })
+    console.error('❌ STK Error:', error.response?.data || error.message)
+    res.status(500).json({
+      message: 'STK Push Failed',
+      error: error.response?.data || error.message,
+    })
   }
 })
 
