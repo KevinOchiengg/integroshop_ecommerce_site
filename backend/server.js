@@ -16,7 +16,7 @@ import stkRoutes from './routers/stkRoutes.js'
 dotenv.config()
 
 const app = express()
-app.use('/api/stk', stkRoutes)
+
 const corsOptions = {
   origin: [
     'https://integroshop-frontend.onrender.com', // Production frontend
@@ -30,6 +30,7 @@ app.use(cors(corsOptions))
 // app.use()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use('/api/stk', stkRoutes)
 
 mongoose.set('strictQuery', false)
 mongoose
