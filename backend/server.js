@@ -10,6 +10,7 @@ import orderRouter from './routers/orderRouter.js'
 import uploadRouter from './routers/uploadRouter.js'
 import cors from 'cors'
 import stkRoutes from './routers/stkRoutes.js'
+import axios from 'axios'
 
 dotenv.config()
 
@@ -135,6 +136,101 @@ io.on('connection', (socket) => {
       }
     }
   })
+})
+
+//M-Pesa payment logic
+
+// Step 1: Get Access Token from M-PESA
+const getAccessToken = async () => {
+  const auth = Buffer.from(
+    `${process.env.MPESA_CONSUMER_KEY}:${process.env.MPESA_CONSUMER_SECRET}`
+  ).toString('base64')
+
+  try {
+    const response = await axios.get(
+      'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+      {
+        headers: {
+          Authorization: `Basic ${auth}`,
+        },
+      }
+    )
+    return response.data.access_token
+  } catch (error) {
+    throw new Error('Failed to get access token')
+  }
+}
+
+// Step 2: STK Push Endpoint
+app.post('/api/mpesa/stkpush', async (req, res) => {
+  const { phoneNumber, amount } = req.body
+
+  try {
+    const accessToken = await getAccessToken()
+
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[^0-9]/g, '')
+      .slice(0, -3)
+
+    const password = Buffer.from(
+      `${process.env.MPESA_BUSINESS_SHORTCODE}${process.env.MPESA_PASSKEY}${timestamp}`
+    ).toString('base64')
+
+    const stkPushData = {
+      BusinessShortCode: process.env.MPESA_BUSINESS_SHORTCODE,
+      Password: password,
+      Timestamp: timestamp,
+      TransactionType: 'CustomerPayBillOnline',
+      Amount: amount,
+      PartyA: phoneNumber,
+      PartyB: process.env.MPESA_BUSINESS_SHORTCODE,
+      PhoneNumber: phoneNumber,
+      CallBackURL: process.env.MPESA_CALLBACK_URL,
+      AccountReference: 'MyApp Payment',
+      TransactionDesc: 'Payment for services',
+    }
+
+    const response = await axios.post(
+      'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+      stkPushData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    res.json({
+      success: true,
+      message: 'STK Push sent successfully!',
+      data: response.data,
+    })
+  } catch (error) {
+    console.error('STK Push Error:', error.response?.data || error.message)
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send STK Push',
+      error: error.response?.data || error.message,
+    })
+  }
+})
+
+// Step 3: M-PESA Callback URL
+app.post('/api/mpesa/callback', (req, res) => {
+  console.log('M-PESA Callback received:', req.body)
+
+  const callbackData = req.body
+
+  if (callbackData?.Body?.stkCallback?.ResultCode === 0) {
+    console.log('✅ Payment successful!')
+    // TODO: update database, send email, etc.
+  } else {
+    console.log('❌ Payment failed or cancelled')
+  }
+
+  res.json({ success: true })
 })
 
 httpServer.listen(port, () => {
