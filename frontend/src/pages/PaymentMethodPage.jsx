@@ -1,78 +1,56 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { savePaymentMethod } from '../actions/cartActions'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { useNavigate } from 'react-router-dom'
-import MpesaPaymentPage from '../components/MpesaPayment'
+import mpesaLogo from '../assets/mpesa.png'
+import paypalLogo from '../assets/paypal.png'
+import stripeLogo from '../assets/stripe.png'
 
-export default function PaymentMethodPage(props) {
+const PaymentMethodPage = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const cart = useSelector((state) => state.cart)
-  const { shippingAddress, cartItems } = cart
+  const { shippingAddress } = cart
 
-  // Redirect to shipping if address not set
   if (!shippingAddress.address) {
     navigate('/shipping')
   }
 
-  // ✅ Calculate total price
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.qty * item.price,
-    0
-  )
-
-  const [paymentMethod, setPaymentMethod] = useState('PayPal')
-  const dispatch = useDispatch()
-
-  const submitHandler = async (e) => {
-    e.preventDefault()
-    dispatch(savePaymentMethod(paymentMethod))
-
-    if (paymentMethod === 'M-Pesa') {
-      const phoneNumber = prompt('Enter your M-Pesa phone number:')
-      if (!phoneNumber) {
-        alert('Phone number is required for M-Pesa payment.')
-        return
-      }
-
-      try {
-        const response = await fetch('/api/stk/push', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: totalPrice,
-            phone: phoneNumber,
-          }),
-        })
-
-        const data = await response.json()
-        if (!response.ok) {
-          alert(`M-Pesa Error: ${data.message || 'STK push failed'}`)
-          return
-        }
-
-        alert('STK Push Sent! Please check your phone to complete the payment.')
-        navigate('/placeorder')
-      } catch (error) {
-        console.error('STK Push Error:', error)
-        alert('Failed to initiate M-Pesa payment.')
-      }
-    } else {
-      navigate('/placeorder')
-    }
+  const handlePaymentSelect = (method) => {
+    dispatch(savePaymentMethod(method))
+    navigate('/placeorder')
   }
 
   return (
     <Wrapper>
       <div className='section-center'>
         <CheckoutSteps step1 step2 step3 />
-        <div className='form' onSubmit={submitHandler}>
-          <h3 className='sub-heading'>payment</h3>
-          <h1 className='heading'>payment method</h1>
+        <h3 className='sub-heading'>Payment</h3>
+        <h1 className='heading'>Choose Payment Method</h1>
 
-          <div className='payment-method-container'>
-            <MpesaPaymentPage />
+        <div className='payment-grid'>
+          <div
+            className='payment-option'
+            onClick={() => handlePaymentSelect('M-Pesa')}
+          >
+            <img src={mpesaLogo} alt='M-Pesa' />
+           
+          </div>
+          <div
+            className='payment-option'
+            onClick={() => handlePaymentSelect('PayPal')}
+          >
+            <img src={paypalLogo} alt='PayPal' />
+           
+          </div>
+          <div
+            className='payment-option'
+            onClick={() => handlePaymentSelect('Stripe')}
+          >
+            <img src={stripeLogo} alt='Stripe' />
+           
           </div>
         </div>
       </div>
@@ -80,44 +58,60 @@ export default function PaymentMethodPage(props) {
   )
 }
 
+export default PaymentMethodPage
+
 const Wrapper = styled.section`
-  margin: 12rem 0;
+  margin: 8rem 0;
 
   .sub-heading {
+    text-align: center;
+    text-transform: uppercase;
+    color: #777;
+    margin-bottom: 1rem;
     margin-top: 4rem;
   }
 
-  div,
-  .btn,
-  .payment-method-container {
-    margin: 0 auto;
+  .heading {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
   }
 
-  .payment-method-container {
+  .payment-grid {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .payment-option {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    flex-direction: row;
-    width: 30%;
-    margin: 2rem auto;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    padding: 2rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    width: 180px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
 
-  input {
-    height: 2.2rem;
+  .payment-option:hover {
+    border-color: #28a745;
+    transform: translateY(-5px);
   }
 
-  .btn {
-    font-size: 2rem;
+  .payment-option img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 1rem;
   }
 
-  #stripe {
-    margin-right: 1.2rem;
-  }
-
-  @media screen and (min-width: 800px) {
-    .checkbox {
-      height: 1.5em;
-      width: 1.5em;
-    }
+  .payment-option p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
   }
 `
 

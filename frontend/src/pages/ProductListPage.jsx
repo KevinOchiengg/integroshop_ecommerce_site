@@ -69,7 +69,7 @@ export default function ProductListPage(props) {
     }
   }
   const createHandler = () => {
-    dispatch(createProduct())
+    navigate('/product/create')
   }
   return (
     <Wrapper>
@@ -84,25 +84,25 @@ export default function ProductListPage(props) {
         <div className='row'>
           {loadingDelete && <Loading />}
           {errorDelete && (
-            <Message variant='danger' message={errorDelete} name='hide' />
+            <Message
+              variant='danger'
+              message={errorDelete + 'ed'}
+              name='hide'
+            />
           )}
 
           {loadingCreate && <Loading />}
           {errorCreate && (
             <Message
               variant='danger'
-              message='something went wrong'
+              message={errorCreate + 'ec'}
               name='hide'
             />
           )}
           {loading ? (
             <Loading />
           ) : error ? (
-            <Message
-              variant='danger'
-              message='something went wrong'
-              name='hide'
-            />
+            <Message variant='danger' message={error + 'e'} name='hide' />
           ) : (
             <>
               <table className='table'>

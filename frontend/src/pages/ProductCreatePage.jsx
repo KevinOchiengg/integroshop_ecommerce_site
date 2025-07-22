@@ -1,13 +1,17 @@
-// src/pages/ProductCreatePage.jsx
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import Axios from 'axios'
 import { createProduct } from '../actions/productActions'
-import Loading from '../components/Loading'
+import LoadingBox from '../components/Loading'
 import Message from '../components/Message'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 export default function ProductCreatePage() {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  // Form Fields
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
   const [image, setImage] = useState('')
@@ -16,14 +20,15 @@ export default function ProductCreatePage() {
   const [countInStock, setCountInStock] = useState('')
   const [description, setDescription] = useState('')
 
-  const productCreate = useSelector((state) => state.productCreate)
-  const { loading, error } = productCreate
+  // Image upload state
+  const [loadingUpload, setLoadingUpload] = useState(false)
+  const [errorUpload, setErrorUpload] = useState('')
 
   const userSignin = useSelector((state) => state.userSignin)
   const { userInfo } = userSignin
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const productCreate = useSelector((state) => state.productCreate)
+  const { loading, error } = productCreate
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -38,15 +43,37 @@ export default function ProductCreatePage() {
         description,
       })
     )
-    navigate('/productlist')
+    navigate('/productlist') // Redirect after creation
+  }
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0]
+    const bodyFormData = new FormData()
+    bodyFormData.append('image', file)
+    setLoadingUpload(true)
+    try {
+      const { data } = await Axios.post('/api/uploads', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      })
+      setImage(data)
+      setLoadingUpload(false)
+    } catch (error) {
+      setErrorUpload(error.message)
+      setLoadingUpload(false)
+    }
   }
 
   return (
     <Wrapper>
       <div className='section-center'>
         <form className='form' onSubmit={submitHandler}>
-          <h1 className='heading'>Create Product</h1>
-          {loading && <Loading />}
+          <h3 className='sub-heading'>product</h3>
+          <h1 className='heading'>create new product</h1>
+
+          {loading && <LoadingBox />}
           {error && <Message variant='danger' message={error} name='hide' />}
 
           <div className='field-container'>
@@ -56,7 +83,7 @@ export default function ProductCreatePage() {
               type='text'
               value={name}
               onChange={(e) => setName(e.target.value)}
-              required
+              placeholder='Enter name'
             />
           </div>
 
@@ -67,7 +94,7 @@ export default function ProductCreatePage() {
               type='number'
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              required
+              placeholder='Enter price'
             />
           </div>
 
@@ -78,8 +105,17 @@ export default function ProductCreatePage() {
               type='text'
               value={image}
               onChange={(e) => setImage(e.target.value)}
-              required
+              placeholder='Enter image URL'
             />
+          </div>
+
+          <div className='field-container'>
+            <label htmlFor='imageFile'>Upload Image</label>
+            <input id='imageFile' type='file' onChange={uploadFileHandler} />
+            {loadingUpload && <LoadingBox />}
+            {errorUpload && (
+              <Message variant='danger' message={errorUpload} name='hide' />
+            )}
           </div>
 
           <div className='field-container'>
@@ -89,7 +125,7 @@ export default function ProductCreatePage() {
               type='text'
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              required
+              placeholder='Enter category'
             />
           </div>
 
@@ -100,18 +136,18 @@ export default function ProductCreatePage() {
               type='text'
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-              required
+              placeholder='Enter brand'
             />
           </div>
 
           <div className='field-container'>
-            <label htmlFor='countInStock'>Count In Stock</label>
+            <label htmlFor='countInStock'>Stock</label>
             <input
               id='countInStock'
               type='number'
               value={countInStock}
               onChange={(e) => setCountInStock(e.target.value)}
-              required
+              placeholder='Enter count in stock'
             />
           </div>
 
@@ -122,13 +158,13 @@ export default function ProductCreatePage() {
               rows='3'
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              required
-            />
+              placeholder='Enter description'
+            ></textarea>
           </div>
 
           <div className='field-container'>
-            <button type='submit' className='btn primary'>
-              Save Product
+            <button className='btn primary' type='submit'>
+              Create
             </button>
           </div>
         </form>
