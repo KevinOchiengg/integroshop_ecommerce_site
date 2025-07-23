@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Axios from 'axios'
 import { createProduct } from '../actions/productActions'
@@ -28,7 +28,9 @@ export default function ProductCreatePage() {
   const { userInfo } = userSignin
 
   const productCreate = useSelector((state) => state.productCreate)
-  const { loading, error } = productCreate
+  const { loading, error, success, product } = productCreate
+
+  // const { loading, error } = productCreate
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -43,8 +45,13 @@ export default function ProductCreatePage() {
         description,
       })
     )
-    navigate('/productlist') // Redirect after creation
   }
+
+  useEffect(() => {
+    if (success) {
+      navigate('/productlist')
+    }
+  }, [success, navigate])
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0]
