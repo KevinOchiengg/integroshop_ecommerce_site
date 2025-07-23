@@ -5,7 +5,7 @@ import { savePaymentMethod } from '../actions/cartActions'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { useNavigate } from 'react-router-dom'
 import mpesaLogo from '../assets/mpesa.png'
-import paypalLogo from '../assets/paypal.png'
+import paypalLogo from '../assets/PayPal.png'
 import stripeLogo from '../assets/stripe.png'
 
 const PaymentMethodPage = () => {
