@@ -1,4 +1,4 @@
-// import express from 'express'
+import express from 'express'
 import multer from 'multer'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import { v2 as cloudinary } from 'cloudinary'
