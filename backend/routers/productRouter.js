@@ -109,21 +109,17 @@ productRouter.post(
   isAuth,
   isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
-  const product = new Product({
-    name:
-      req.body.name ||
-      'Shipped Fashion Men PU Leather Casual Shoes Loafers Shoes-white',
-    image: req.body.image || '/images/lofers.jpg',
-    description:
-      req.body.description ||
-      'This pair in addition to being comfortable is very stylish. A must have for the classic man. We have got the best prices and service.This shoes is more convenient to wear',
-    rating: req.body.rating || 0,
-    price: req.body.price || 1600,
-    numReviews: 0,
-    countInStock: req.body.countInStock || 10,
-    category: req.body.category || 'shoes',
-    brand: req.body.brand || 'Nike',
-  })
+    const product = new Product({
+      name: req.body.name,
+      image: req.body.image,
+      description: req.body.description,
+      rating: req.body.rating,
+      price: req.body.price,
+      numReviews: 0,
+      countInStock: req.body.countInStock,
+      category: req.body.category,
+      brand: req.body.brand,
+    })
     const createdProduct = await product.save()
     res.send({ message: 'Product Created', product: createdProduct })
   })
@@ -164,7 +160,6 @@ productRouter.delete(
     }
   })
 )
-
 
 productRouter.post(
   '/:id/reviews',

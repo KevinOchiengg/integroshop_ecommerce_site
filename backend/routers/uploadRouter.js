@@ -29,6 +29,7 @@ const upload = multer({ storage })
 const uploadRouter = express.Router()
 
 uploadRouter.post('/', isAuth, upload.single('image'), (req, res) => {
+  console.log('Uploaded file:', req.file) // For debug
   res.send(req.file.path) // this will be the Cloudinary image URL
 })
 

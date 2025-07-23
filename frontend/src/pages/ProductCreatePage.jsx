@@ -105,16 +105,6 @@ export default function ProductCreatePage() {
             />
           </div>
 
-          <div className='field-container'>
-            <label htmlFor='image'>Image URL</label>
-            <input
-              id='image'
-              type='text'
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              placeholder='Enter image URL'
-            />
-          </div>
 
           <div className='field-container'>
             <label htmlFor='imageFile'>Upload Image</label>
