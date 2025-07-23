@@ -40,7 +40,7 @@ export const listProducts =
     })
     try {
       const { data } = await Axios.get(
-        `/api/products?pageNumber=${pageNumber}&seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`
+        `https://integroshop-backend.onrender.com/api/products?pageNumber=${pageNumber}&seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`
       )
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data })
     } catch (error) {
@@ -53,7 +53,9 @@ export const listProductCategories = () => async (dispatch) => {
     type: PRODUCT_CATEGORY_LIST_REQUEST,
   })
   try {
-    const { data } = await Axios.get(`/api/products/categories`)
+    const { data } = await Axios.get(
+      `https://integroshop-backend.onrender.com/api/products/categories`
+    )
     dispatch({ type: PRODUCT_CATEGORY_LIST_SUCCESS, payload: data })
   } catch (error) {
     dispatch({ type: PRODUCT_CATEGORY_LIST_FAIL, payload: error.message })
@@ -63,7 +65,9 @@ export const listProductCategories = () => async (dispatch) => {
 export const detailsProduct = (productId) => async (dispatch) => {
   dispatch({ type: PRODUCT_DETAILS_REQUEST, payload: productId })
   try {
-    const { data } = await Axios.get(`/api/products/${productId}`)
+    const { data } = await Axios.get(
+      `https://integroshop-backend.onrender.com/api/products/${productId}`
+    )
     dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
@@ -83,11 +87,15 @@ export const createProduct = (productData) => async (dispatch, getState) => {
   } = getState()
 
   try {
-    const { data } = await Axios.post('/api/products', productData, {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    })
+    const { data } = await Axios.post(
+      'https://integroshop-backend.onrender.com/api/products',
+      productData,
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+    )
 
     dispatch({
       type: PRODUCT_CREATE_SUCCESS,
@@ -108,9 +116,13 @@ export const updateProduct = (product) => async (dispatch, getState) => {
     userSignin: { userInfo },
   } = getState()
   try {
-    const { data } = await Axios.put(`/api/products/${product._id}`, product, {
-      headers: { Authorization: `Bearer ${userInfo.token}` },
-    })
+    const { data } = await Axios.put(
+      `https://integroshop-backend.onrender.com/api/products/${product._id}`,
+      product,
+      {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      }
+    )
     dispatch({ type: PRODUCT_UPDATE_SUCCESS, payload: data })
   } catch (error) {
     const message =
@@ -126,9 +138,12 @@ export const deleteProduct = (productId) => async (dispatch, getState) => {
     userSignin: { userInfo },
   } = getState()
   try {
-    await Axios.delete(`/api/products/${productId}`, {
-      headers: { Authorization: `Bearer ${userInfo.token}` },
-    })
+    await Axios.delete(
+      `https://integroshop-backend.onrender.com/api/products/${productId}`,
+      {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      }
+    )
     dispatch({ type: PRODUCT_DELETE_SUCCESS })
   } catch (error) {
     const message =
@@ -146,7 +161,7 @@ export const createReview =
     } = getState()
     try {
       const { data } = await Axios.post(
-        `/api/products/${productId}/reviews`,
+        `https://integroshop-backend.onrender.com/api/products/${productId}/reviews`,
         review,
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
