@@ -7,15 +7,13 @@ import { formatPrice } from '../utils/helpers'
 
 export default function Product({ product }) {
   const [qty] = useState(1)
-  const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
-  console.log(product.image)
 
   return (
     <Wrapper>
       <article className='box'>
         <div className='image'>
           <Link to={`/product/${product._id}`}>
-            <img src={`${BASE_URL}${product.image}`} alt={product.name} />
+            <img src={product.image} alt={product.name} />
           </Link>
           <div className='heart-container'>
             <Link to={`/wishlist/${product._id}`} className='heart'>
