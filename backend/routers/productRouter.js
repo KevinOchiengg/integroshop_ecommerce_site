@@ -113,9 +113,7 @@ productRouter.post(
       name: req.body.name,
       image: req.body.image,
       description: req.body.description,
-      rating: req.body.rating,
       price: req.body.price,
-      numReviews: 0,
       countInStock: req.body.countInStock,
       category: req.body.category,
       brand: req.body.brand,
@@ -124,6 +122,7 @@ productRouter.post(
     res.send({ message: 'Product Created', product: createdProduct })
   })
 )
+
 productRouter.put(
   '/:id',
   isAuth,
