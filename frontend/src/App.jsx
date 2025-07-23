@@ -29,7 +29,7 @@ import OrderHistoryPage from './pages/OrderHistoryPage'
 import SigninPage from './pages/SigninPage'
 import ErrorPage from './pages/ErrorPage'
 import WishListPage from './pages/WishListPage'
-import ProductCreatePage from './pages/productCreatePage'
+import ProductCreatePage from './pages/ProductCreatePage'
 
 function App() {
   return (
