@@ -59,12 +59,18 @@ export default function ProductCreatePage() {
     bodyFormData.append('image', file)
     setLoadingUpload(true)
     try {
-      const { data } = await Axios.post('/api/uploads', bodyFormData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      })
+      const { data } = await Axios.post(
+        import.meta.env.PROD
+          ? 'https://integroshop-backend.onrender.com/api/uploads'
+          : '/api/uploads',
+        bodyFormData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      )
       setImage(data)
       setLoadingUpload(false)
     } catch (error) {
