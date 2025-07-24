@@ -23,7 +23,10 @@ export default function Product({ product }) {
         </div>
         <div className='content'>
           <div className='stars'>
-            <Rating rating={product.rating} numReviews={product.numReviews} />
+            <span class='num-reviews'>
+              <Rating rating={product.rating} numReviews={product.numReviews} />
+            </span>
+            {/* <Rating rating={product.rating} numReviews={product.numReviews} /> */}
           </div>
           <Link to={`/product/${product._id}`}>
             <h3>{product.name.substring(0, 20)}</h3>
@@ -44,7 +47,7 @@ export default function Product({ product }) {
 
 const Wrapper = styled.div`
   margin: 0 auto;
-  width: 20rem;
+
 
   .box {
     background: var(--clr-white);
@@ -141,6 +144,10 @@ const Wrapper = styled.div`
       flex-direction: row; /* ⬅️ Make layout horizontal */
       align-items: center;
       gap: 1rem;
+
+    }
+    .num-reviews{
+      display: none;
     }
   }
 `
