@@ -29,7 +29,7 @@ export default function Product({ product }) {
             <h3>{product.name.substring(0, 20)}</h3>
           </Link>
 
-          <p>{product.description.substring(0, 50)}...</p>
+          <p>{product.description.substring(0, 40)}...</p>
 
           <Link className='btn' to={`/cart/${product._id}?qty=${qty}`}>
             add to cart
@@ -44,21 +44,22 @@ export default function Product({ product }) {
 
 const Wrapper = styled.div`
   margin: 0 auto;
+  width: 20rem;
 
   .box {
     background: var(--clr-white);
-    border: 0.1rem solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.5rem;
-    box-shadow: var(--light-shadow);
     margin: 0 auto;
   }
 
   .box .image {
-    height: 18rem;
-    width: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
     padding: 1rem;
     overflow: hidden;
     position: relative;
+    height: 20rem;
+    width: 20rem;
   }
 
   .heart-container svg {
@@ -66,10 +67,9 @@ const Wrapper = styled.div`
   }
 
   .box .image img {
-    height: 100%;
-    width: 100%;
     border-radius: 0.5rem;
-    object-fit: cover;
+    object-fit: contain;
+    transition: transform 0.8s ease;
   }
   .heart-container a {
     border-radius: 50%;
@@ -111,25 +111,29 @@ const Wrapper = styled.div`
     padding-bottom: 1rem;
   }
 
+  .image:hover img {
+    transform: scale(1.05);
+  }
+
   .content h3 {
     color: var(--clr-blue);
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 
   .content p {
     color: var(--clr-dark-grey);
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     line-height: 1;
   }
 
   .btn {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     padding: 0.6rem 1.6rem;
   }
 
   .content .price {
     color: var(--clr-blue);
     margin-left: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 `
