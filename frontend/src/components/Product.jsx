@@ -58,8 +58,6 @@ const Wrapper = styled.div`
     padding: 1rem;
     overflow: hidden;
     position: relative;
-    height: 20rem;
-    width: 20rem;
   }
 
   .heart-container svg {
@@ -135,5 +133,14 @@ const Wrapper = styled.div`
     color: var(--clr-blue);
     margin-left: 1rem;
     font-size: 1.4rem;
+  }
+
+  @media (max-width: 768px) {
+    .box {
+      display: flex;
+      flex-direction: row; /* ⬅️ Make layout horizontal */
+      align-items: center;
+      gap: 1rem;
+    }
   }
 `
