@@ -48,7 +48,6 @@ export default function Product({ product }) {
 const Wrapper = styled.div`
   margin: 0 auto;
 
-
   .box {
     background: var(--clr-white);
     margin: 0 auto;
@@ -61,6 +60,7 @@ const Wrapper = styled.div`
     padding: 1rem;
     overflow: hidden;
     position: relative;
+    
   }
 
   .heart-container svg {
@@ -74,7 +74,7 @@ const Wrapper = styled.div`
   }
   .heart-container a {
     border-radius: 50%;
-    line-height: 5rem;
+    line-height: 4rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,9 +144,17 @@ const Wrapper = styled.div`
       flex-direction: row; /* ⬅️ Make layout horizontal */
       align-items: center;
       gap: 1rem;
-
     }
-    .num-reviews{
+    .box .image {
+      width: 16rem; /* Reduce height for smaller screens */
+      padding: 0.5rem;
+    }
+
+    .heart-container {
+      top: -0.8rem;
+      right: -0.8rem;
+    }
+    .num-reviews {
       display: none;
     }
   }
