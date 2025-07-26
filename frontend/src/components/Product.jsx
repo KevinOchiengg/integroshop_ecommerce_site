@@ -23,7 +23,7 @@ export default function Product({ product }) {
         </div>
         <div className='content'>
           <div className='stars'>
-            <span class='num-reviews'>
+            <span className='num-reviews'>
               <Rating rating={product.rating} numReviews={product.numReviews} />
             </span>
             {/* <Rating rating={product.rating} numReviews={product.numReviews} /> */}
@@ -51,6 +51,7 @@ const Wrapper = styled.div`
   .box {
     background: var(--clr-white);
     margin: 0 auto;
+    box-shadow: var(--light-shadow);
   }
 
   .box .image {
@@ -60,7 +61,6 @@ const Wrapper = styled.div`
     padding: 1rem;
     overflow: hidden;
     position: relative;
-    
   }
 
   .heart-container svg {
