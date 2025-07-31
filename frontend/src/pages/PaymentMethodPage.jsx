@@ -5,8 +5,8 @@ import { savePaymentMethod } from '../actions/cartActions'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { useNavigate } from 'react-router-dom'
 import mpesaLogo from '../assets/mpesa.png'
-import paypalLogo from '../assets/PayPal.png'
-import stripeLogo from '../assets/stripe.png'
+// import paypalLogo from '../assets/PayPal.png'
+// import stripeLogo from '../assets/stripe.png'
 
 const PaymentMethodPage = () => {
   const navigate = useNavigate()
@@ -38,7 +38,7 @@ const PaymentMethodPage = () => {
             <img src={mpesaLogo} alt='M-Pesa' />
            
           </div>
-          <div
+          {/* <div
             className='payment-option'
             onClick={() => handlePaymentSelect('PayPal')}
           >
@@ -51,7 +51,7 @@ const PaymentMethodPage = () => {
           >
             <img src={stripeLogo} alt='Stripe' />
            
-          </div>
+          </div> */}
         </div>
       </div>
     </Wrapper>

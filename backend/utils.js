@@ -5,20 +5,6 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-export const getAccessToken = async () => {
-  const { data } = await axios.get(
-    'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
-    {
-      auth: {
-        username: process.env.MPESA_CONSUMER_KEY,
-        password: process.env.MPESA_CONSUMER_SECRET,
-      },
-    }
-  )
-  return data.access_token
-}
-
-
 export const generateToken = (user) => {
   return jwt.sign(
     {
