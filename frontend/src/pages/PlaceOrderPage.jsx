@@ -1,70 +1,90 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { createOrder } from '../actions/orderActions'
+import styled from 'styled-components'
+import axios from 'axios'
 import CheckoutSteps from '../components/CheckoutSteps'
+import { createOrder } from '../actions/orderActions'
 import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 import Loading from '../components/Loading'
-import styled from 'styled-components'
 import Message from '../components/Message'
 import { formatPrice } from '../utils/helpers'
-import axios from 'axios'
 
-// Mpesa payment actions
-import { paymentStart, paymentSuccess, paymentFailure } from '../store' // adjust this import path if needed
-
-export default function PlaceOrderPage(props) {
+export default function PlaceOrderPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const cart = useSelector((state) => state.cart)
+  const orderCreate = useSelector((state) => state.orderCreate)
+  const { loading, success, error, order } = orderCreate
+
+  const [mpesaLoading, setMpesaLoading] = useState(false)
+  const [mpesaError, setMpesaError] = useState(null)
 
   if (!cart.paymentMethod) {
     navigate('/payment')
   }
 
-  const orderCreate = useSelector((state) => state.orderCreate)
-  const { loading, success, error, order } = orderCreate
+  const toPrice = (num) => Number(num.toFixed(2))
 
-  const toPrice = (num) => Number(num)
-
-  // 🛑 WARNING: This mutates state directly (Fix this later in reducers)
-  cart.itemsPrice = toPrice(
+  // ✅ Local calculation - no Redux mutation
+  const itemsPrice = toPrice(
     cart.cartItems.reduce((a, c) => a + c.qty * c.price, 0)
   )
-  cart.shippingPrice = cart.itemsPrice > 100 ? toPrice(0) : toPrice(10)
-  cart.taxPrice = toPrice(0.15 * cart.itemsPrice)
-  cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice
+  const shippingPrice = itemsPrice > 100 ? 0 : 10
+  const taxPrice = toPrice(0.15 * itemsPrice)
+  const totalPrice = toPrice(itemsPrice + shippingPrice + taxPrice)
 
   const placeOrderHandler = async () => {
     if (cart.paymentMethod === 'M-Pesa') {
-      // Make sure phoneNumber exists in shipping address
       let phoneNumber = cart.shippingAddress.phoneNumber || ''
+      if (!phoneNumber) {
+        alert('Phone number is missing in shipping address.')
+        return
+      }
       if (phoneNumber.startsWith('0')) {
         phoneNumber = '254' + phoneNumber.slice(1)
       }
 
-      dispatch(paymentStart())
       try {
-        const res = await axios.post('/api/mpesa/stkpush', {
+        setMpesaLoading(true)
+        setMpesaError(null)
+
+        const { data } = await axios.post('/api/mpesa/stkpush', {
           phoneNumber,
-          amount: cart.totalPrice,
+          amount: Math.round(totalPrice),
         })
 
-        dispatch(paymentSuccess(res.data))
-        alert('M-PESA STK Push sent! Check your phone to complete payment.')
+        alert('M-PESA prompt sent! Check your phone to complete payment.')
 
-        // Now place the order
-        dispatch(createOrder({ ...cart, orderItems: cart.cartItems }))
-      } catch (err) {
         dispatch(
-          paymentFailure(err.response?.data?.message || 'STK Push failed')
+          createOrder({
+            ...cart,
+            orderItems: cart.cartItems,
+            itemsPrice,
+            shippingPrice,
+            taxPrice,
+            totalPrice,
+          })
         )
-        alert('Payment failed. Please try again.')
-        return
+      } catch (err) {
+        setMpesaError(
+          err.response?.data?.errorMessage || 'M-PESA payment failed'
+        )
+      } finally {
+        setMpesaLoading(false)
       }
     } else {
-      dispatch(createOrder({ ...cart, orderItems: cart.cartItems }))
+      dispatch(
+        createOrder({
+          ...cart,
+          orderItems: cart.cartItems,
+          itemsPrice,
+          shippingPrice,
+          taxPrice,
+          totalPrice,
+        })
+      )
     }
   }
 
@@ -73,7 +93,7 @@ export default function PlaceOrderPage(props) {
       navigate(`/order/${order._id}`)
       dispatch({ type: ORDER_CREATE_RESET })
     }
-  }, [dispatch, order, navigate, success])
+  }, [dispatch, navigate, order, success])
 
   return (
     <Wrapper>
@@ -88,12 +108,12 @@ export default function PlaceOrderPage(props) {
                   <p>
                     <strong>Name:</strong> {cart.shippingAddress.fullName}
                     <br />
+                    <strong>Phone:</strong> {cart.shippingAddress.phoneNumber}
+                    <br />
                     <strong>Address:</strong> {cart.shippingAddress.address},{' '}
                     {cart.shippingAddress.city},{' '}
                     {cart.shippingAddress.postalCode},{' '}
                     {cart.shippingAddress.country}
-                    <br />
-                    <strong>Phone:</strong> {cart.shippingAddress.phoneNumber}
                   </p>
                 </div>
               </li>
@@ -136,6 +156,7 @@ export default function PlaceOrderPage(props) {
               </li>
             </ul>
           </div>
+
           <div className='col-1'>
             <div className='card card-body'>
               <ul>
@@ -145,29 +166,25 @@ export default function PlaceOrderPage(props) {
                 <li>
                   <div className='row'>
                     <div>Items</div>
-                    <div>{formatPrice(cart.itemsPrice)}</div>
+                    <div>{formatPrice(itemsPrice)}</div>
                   </div>
                 </li>
                 <li>
                   <div className='row'>
                     <div>Shipping</div>
-                    <div>{formatPrice(cart.shippingPrice)}</div>
+                    <div>{formatPrice(shippingPrice)}</div>
                   </div>
                 </li>
                 <li>
                   <div className='row'>
                     <div>Tax</div>
-                    <div>{formatPrice(cart.taxPrice)}</div>
+                    <div>{formatPrice(taxPrice)}</div>
                   </div>
                 </li>
                 <li>
                   <div className='row'>
-                    <div>
-                      <strong>Order Total</strong>
-                    </div>
-                    <div>
-                      <strong>{formatPrice(cart.totalPrice)}</strong>
-                    </div>
+                    <strong>Order Total</strong>
+                    <strong>{formatPrice(totalPrice)}</strong>
                   </div>
                 </li>
                 <li>
@@ -175,18 +192,21 @@ export default function PlaceOrderPage(props) {
                     type='button'
                     onClick={placeOrderHandler}
                     className='primary btn block'
-                    disabled={cart.cartItems.length === 0}
+                    disabled={cart.cartItems.length === 0 || mpesaLoading}
                   >
-                    Place Order
+                    {mpesaLoading ? 'Sending M-PESA Prompt...' : 'Place Order'}
                   </button>
                 </li>
                 {loading && <Loading />}
                 {error && (
                   <Message
-                    message='Error occurred, please check your internet connection'
+                    message='Error creating order'
                     variant='danger'
                     name='hide'
                   />
+                )}
+                {mpesaError && (
+                  <Message message={mpesaError} variant='danger' name='hide' />
                 )}
               </ul>
             </div>
@@ -209,272 +229,32 @@ const Wrapper = styled.section`
     margin: 1rem;
     box-shadow: var(--light-shadow);
   }
+
   .card-body {
     padding: 2rem;
-  }
-  .btn-hide {
-    display: none;
-  }
-
-  .card-body > * {
-    margin-bottom: 1.7rem;
-  }
-  .card-body ul li {
-    margin: 2rem auto;
   }
 
   .row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .row.center {
-    justify-content: center;
-  }
-  .row.top {
     align-items: flex-start;
-    margin-top: 5rem;
+    justify-content: space-between;
   }
-  .row.start {
-    justify-content: flex-start;
-  }
+
   .col-1 {
     flex: 1 1 25rem;
   }
+
   .col-2 {
     flex: 2 1 50rem;
   }
-  .col-3 {
-    flex: 32 1 75rem;
-  }
+
   .min-30 {
     min-width: 30rem;
   }
-  .p-1 {
-    padding: 1rem;
-  }
+
   img.small {
     max-width: 5rem;
     width: 100%;
   }
 `
-
-// import React, { useEffect } from 'react'
-// import { useDispatch, useSelector } from 'react-redux'
-// import { Link, useNavigate } from 'react-router-dom'
-// import { createOrder } from '../actions/orderActions'
-// import CheckoutSteps from '../components/CheckoutSteps'
-// import { ORDER_CREATE_RESET } from '../constants/orderConstants'
-// import Loading from '../components/Loading'
-// import styled from 'styled-components'
-// import Message from '../components/Message'
-// import { formatPrice } from '../utils/helpers'
-
-// export default function PlaceOrderPage(props) {
-//   const navigate = useNavigate()
-//   const cart = useSelector((state) => state.cart)
-//   if (!cart.paymentMethod) {
-//     navigate('/payment')
-//   //
-//   const orderCreate = useSelector((state) => state.orderCreate)
-//   const { loading, success, error, order } = orderCreate
-//   const toPrice = (num) => Number(num) // 5.123 => "5.12" => 5.12
-//   cart.itemsPrice = toPrice(
-//     cart.cartItems.reduce((a, c) => a + c.qty * c.price, 0)
-//   )
-//   cart.shippingPrice = cart.itemsPrice > 100 ? toPrice(0) : toPrice(10)
-//   cart.taxPrice = toPrice(0.15 * cart.itemsPrice)
-//   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice
-//   const dispatch = useDispatch()
-//   const placeOrderHandler = () => {
-//     dispatch(createOrder({ ...cart, orderItems: cart.cartItems }))
-//   }
-//   useEffect(() => {
-//     if (success) {
-//       navigate(`/order/${order._id}`)
-//       dispatch({ type: ORDER_CREATE_RESET })
-//     }
-//   }, [dispatch, order, navigate, success])
-//   return (
-//     <Wrapper>
-//       <div className='section-center'>
-//         <CheckoutSteps step1 step2 step3 step4 />
-//         <div className='row top'>
-//           <div className='col-2'>
-//             <ul>
-//               <li>
-//                 <div className='card card-body'>
-//                   <h3>Shipping</h3>
-//                   <p>
-//                     <strong>Name:</strong> {cart.shippingAddress.fullName}
-//                     <br />
-//                     <strong>Address: </strong> {cart.shippingAddress.address},
-//                     {cart.shippingAddress.city},
-//                     {cart.shippingAddress.postalCode},
-//                     {cart.shippingAddress.country}
-//                   </p>
-//                 </div>
-//               </li>
-//               <li>
-//                 <div className='card card-body'>
-//                   <h2>Payment</h2>
-//                   <p>
-//                     <strong>Method:</strong> {cart.paymentMethod}
-//                   </p>
-//                 </div>
-//               </li>
-//               <li>
-//                 <div className='card card-body'>
-//                   <h2>Order Items</h2>
-//                   <ul>
-//                     {cart.cartItems.map((item) => (
-//                       <li key={item.product}>
-//                         <div className='row'>
-//                           <div>
-//                             <img
-//                               src={item.image}
-//                               alt={item.name}
-//                               className='small'
-//                             ></img>
-//                           </div>
-//                           <div className='min-30'>
-//                             <Link to={`/product/${item.product}`}>
-//                               {item.name}
-//                             </Link>
-//                           </div>
-
-//                           <div>
-//                             {item.qty} x {formatPrice(item.price)} ={' '}
-//                             {formatPrice(item.qty * item.price)}
-//                           </div>
-//                         </div>
-//                       </li>
-//                     ))}
-//                   </ul>
-//                 </div>
-//               </li>
-//             </ul>
-//           </div>
-//           <div className='col-1'>
-//             <div className='card card-body'>
-//               <ul>
-//                 <li>
-//                   <h2>Order Summary</h2>
-//                 </li>
-//                 <li>
-//                   <div className='row'>
-//                     <div>Items</div>
-//                     <div>{formatPrice(cart.itemsPrice)}</div>
-//                   </div>
-//                 </li>
-//                 <li>
-//                   <div className='row'>
-//                     <div>Shipping</div>
-//                     <div>{formatPrice(cart.shippingPrice)}</div>
-//                   </div>
-//                 </li>
-//                 <li>
-//                   <div className='row'>
-//                     <div>Tax</div>
-//                     <div>{formatPrice(cart.taxPrice)}</div>
-//                   </div>
-//                 </li>
-//                 <li>
-//                   <div className='row'>
-//                     <div>
-//                       <strong> Order Total</strong>
-//                     </div>
-//                     <div>
-//                       <strong>{formatPrice(cart.totalPrice)}</strong>
-//                     </div>
-//                   </div>
-//                 </li>
-//                 <li>
-//                   <button
-//                     type='button'
-//                     onClick={placeOrderHandler}
-//                     className='primary btn block'
-//                     disabled={cart.cartItems.length === 0}
-//                   >
-//                     Place Order
-//                   </button>
-//                 </li>
-//                 {loading && <Loading />}
-//                 {error && (
-//                   <Message
-//                     message='error occured please check Your internet connection'
-//                     variant='danger'
-//                     name='hide'
-//                   />
-//                 )}
-//               </ul>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </Wrapper>
-//   )
-// }
-// const Wrapper = styled.section`
-//   margin: 12rem 0;
-//   font-size: 2.2rem;
-//   color: var(--clr-blue);
-
-//   .card {
-//     border: 0.1rem #c0c0c0 solid;
-//     background-color: #f8f8f8;
-//     border-radius: 0.5rem;
-//     margin: 1rem;
-//     box-shadow: var(--light-shadow);
-//   }
-//   .card-body {
-//     padding: 2rem;
-//   }
-//   .btn-hide {
-//     display: none;
-//   }
-
-//   .card-body > * {
-//     margin-bottom: 1.7rem;
-//   }
-//   .card-body ul li {
-//     margin: 2rem auto;
-//   }
-
-//   .row {
-//     display: flex;
-//     flex-wrap: wrap;
-//     justify-content: space-between;
-//     align-items: center;
-//   }
-//   .row.center {
-//     justify-content: center;
-//   }
-//   .row.top {
-//     align-items: flex-start;
-//     margin-top: 5rem;
-//   }
-//   .row.start {
-//     justify-content: flex-start;
-//   }
-//   .col-1 {
-//     flex: 1 1 25rem;
-//   }
-//   .col-2 {
-//     flex: 2 1 50rem;
-//   }
-//   .col-3 {
-//     flex: 32 1 75rem;
-//   }
-//   .min-30 {
-//     min-width: 30rem;
-//   }
-//   .p-1 {
-//     padding: 1rem;
-//   }
-//   img.small {
-//     max-width: 5rem;
-//     width: 100%;
-//   }
-// `

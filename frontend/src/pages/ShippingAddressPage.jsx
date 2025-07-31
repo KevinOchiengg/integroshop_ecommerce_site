@@ -21,6 +21,9 @@ export default function ShippingAddressPage(props) {
     navigate('/signin')
   }
   const [fullName, setFullName] = useState(shippingAddress.fullName || '')
+  const [phoneNumber, setPhoneNumber] = useState(
+    shippingAddress.phoneNumber || ''
+  )
   const [address, setAddress] = useState(shippingAddress.address || '')
   const [city, setCity] = useState(shippingAddress.city || '')
   const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || '')
@@ -42,6 +45,7 @@ export default function ShippingAddressPage(props) {
       dispatch(
         saveShippingAddress({
           fullName,
+          phoneNumber,
           address,
           city,
           postalCode,
@@ -84,6 +88,17 @@ export default function ShippingAddressPage(props) {
               onChange={(e) => setFullName(e.target.value)}
               required
             ></input>
+          </div>
+          <div>
+            <label htmlFor='phoneNumber'>Phone Number (M-PESA)</label>
+            <input
+              type='text'
+              id='phoneNumber'
+              placeholder='Please Enter your mpesa no. 0712345678'
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              required
+            />
           </div>
           <div>
             <label htmlFor='address'>Address</label>
