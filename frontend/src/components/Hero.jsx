@@ -9,11 +9,12 @@ const Hero = () => {
         <div className='hero__container'>
           <h3>
             Welcome To <span>Dukawa</span> <br />
-            Wears<span>.</span>
+            Shop<span>.</span>
           </h3>
           <p>
-            Switch Your Swag Mode On & Dress like you <br />
-            already famous
+            Dukawa Emphasizes on variety, quality, trustworthiness, and
+            <br />
+            reliable services for joyful shopping.
           </p>
           <div>
             <Link to='/products' className='btn'>
