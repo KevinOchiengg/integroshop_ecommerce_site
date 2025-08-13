@@ -50,10 +50,13 @@ export default function PlaceOrderPage() {
         setMpesaLoading(true)
         setMpesaError(null)
 
-        const { data } = await axios.post('/api/mpesa/stkpush', {
-          phoneNumber,
-          amount: Math.round(totalPrice),
-        })
+        const { data } = await axios.post(
+          'https://integroshop-backend.onrender.com/api/mpesa/stkpush',
+          {
+            phoneNumber,
+            amount: Math.round(totalPrice),
+          }
+        )
 
         alert('M-PESA prompt sent! Check your phone to complete payment.')
 

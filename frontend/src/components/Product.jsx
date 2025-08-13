@@ -32,7 +32,7 @@ export default function Product({ product }) {
             <h3>{product.name.substring(0, 20)}</h3>
           </Link>
 
-          <p>{product.description.substring(0, 40)}...</p>
+          <p>{product.description.substring(0, 70)}...</p>
 
           <Link className='btn' to={`/cart/${product._id}?qty=${qty}`}>
             add to cart
@@ -146,7 +146,7 @@ const Wrapper = styled.div`
       gap: 1rem;
     }
     .box .image {
-      width: 16rem; /* Reduce height for smaller screens */
+      width: 24rem; /* Reduce height for smaller screens */
       padding: 0.5rem;
     }
 
