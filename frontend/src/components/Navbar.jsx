@@ -153,7 +153,8 @@ const Wrapper = styled.nav`
   border-bottom: 1px solid var(--clr-yellow);
 
   .nav-logo {
-    width: 12rem;
+    position: relative;
+    left: -4rem;
   }
 
   .hide-search-Bar {
@@ -258,7 +259,9 @@ const Wrapper = styled.nav`
       max-width: var(--max-width);
     }
     .nav-logo {
-      width: 18rem;
+      width: 22rem;
+      left: -7.2rem;
+     
     }
 
     .toggle-btn {

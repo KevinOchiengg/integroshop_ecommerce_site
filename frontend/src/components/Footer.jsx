@@ -29,16 +29,13 @@ const Footer = () => {
           <div className='section-center'>
             <div className='footer-col'>
               <div className='footer_logo'>
-                <h3>DUKAWA</h3>
+                
                 <Link to='/'>
-                  <img src={logo} alt='Integrowear' />
+                  <img src={logo} alt='Dukawa' />
                 </Link>
               </div>
 
-              <p>
-                Our purpose Is To Sustainably Make Your Swag Stand Out from The
-                Crowd
-              </p>
+              <p>Our purpose Is To Sustainably Make Your Shopping Stand Out.</p>
             </div>
             <div className='footer-col'>
               <h3>NEWSLETTER</h3>
@@ -115,58 +112,49 @@ const Footer = () => {
           <div className='footer-bottom-container section-center'>
             <p className='copyright'>
               Copyright &copy; {new Date().getFullYear()} - Powered by
-              <Link
+              <a
                 className='developer'
-                to={{
-                  pathname: 'https://ko-technologies.netlify.com',
-                }}
+                href='https://ko-technologies.netlify.com'
                 target='_blank'
+                rel='noopener noreferrer'
               >
                 K&O Technologies
-              </Link>
+              </a>
             </p>
 
             <ul className='social-icons'>
               <li>
                 <Link
-                  to={{
-                    pathname:
-                      'https://www.facebook.com/Swag-Mode-100392718038597',
-                  }}
+                  href='https://www.facebook.com/Swag-Mode-100392718038597'
                   target='_blank'
+                  rel='noopener noreferrer'
                 >
                   <FaFacebook />
                 </Link>
               </li>
               <li>
-                <Link
-                  to={{
-                    pathname:
-                      'https://www.facebook.com/Swag-Mode-100392718038597',
-                  }}
+                <a
+                  href='https://www.facebook.com/Swag-Mode-100392718038597'
                   target='_blank'
+                  rel='noopener noreferrer'
                 >
                   <FaInstagram />
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  to={{
-                    pathname:
-                      'https://www.facebook.com/Swag-Mode-100392718038597',
-                  }}
+                <a
+                  href='https://www.facebook.com/Swag-Mode-100392718038597'
                   target='_blank'
+                  rel='noopener noreferrer'
                 >
                   <FaPinterest />
-                </Link>
+                </a>
               </li>
               <li>
                 <Link
-                  to={{
-                    pathname:
-                      'https://www.facebook.com/Swag-Mode-100392718038597',
-                  }}
+                  href='https://www.facebook.com/Swag-Mode-100392718038597'
                   target='_blank'
+                  rel='noopener noreferrer'
                 >
                   <FaTwitter />
                 </Link>
@@ -222,7 +210,7 @@ const Wrapper = styled.footer`
   }
 
   img {
-    width: 50%;
+    width: 70%;
     margin: 0 auto;
   }
   .footer-col {

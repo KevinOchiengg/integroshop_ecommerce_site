@@ -26,7 +26,7 @@ function FeaturedProducts() {
         ) : (
           <div className='featured'>
             {products &&
-              products.slice(0, 8).map((product) => {
+              products.slice(0, 30).map((product) => {
                 return <Product key={product._id} product={product} />
               })}
           </div>
@@ -41,8 +41,10 @@ const Wrapper = styled.section`
 
   .featured {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
     gap: 1.5rem;
+    align-items: stretch; 
+    
   }
 
   .loading-container {

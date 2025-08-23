@@ -48,6 +48,7 @@ export default function Product({ product }) {
 const Wrapper = styled.div`
   margin: 0 auto;
 
+
   .box {
     background: var(--clr-white);
     margin: 0 auto;
@@ -146,7 +147,7 @@ const Wrapper = styled.div`
       gap: 1rem;
     }
     .box .image {
-      width: 24rem; /* Reduce height for smaller screens */
+      width: 26rem; /* Reduce height for smaller screens */
       padding: 0.5rem;
     }
 

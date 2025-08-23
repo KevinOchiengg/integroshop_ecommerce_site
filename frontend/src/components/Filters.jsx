@@ -153,6 +153,7 @@ const Wrapper = styled.section`
     padding: 5px;
     border: 1px solid var(--clr-light-grey);
     border-radius: 2px;
+   
   }
 
   .filter-by-review-container li,
