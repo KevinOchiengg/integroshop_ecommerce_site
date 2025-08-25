@@ -154,7 +154,8 @@ const Wrapper = styled.nav`
 
   .nav-logo {
     position: relative;
-    left: -4rem;
+    left: -5rem;
+    width: 17rem;
   }
 
   .hide-search-Bar {
@@ -261,7 +262,6 @@ const Wrapper = styled.nav`
     .nav-logo {
       width: 22rem;
       left: -7.2rem;
-     
     }
 
     .toggle-btn {

@@ -26,13 +26,13 @@ export default function Product({ product }) {
             <span className='num-reviews'>
               <Rating rating={product.rating} numReviews={product.numReviews} />
             </span>
-            {/* <Rating rating={product.rating} numReviews={product.numReviews} /> */}
+          
           </div>
           <Link to={`/product/${product._id}`}>
             <h3>{product.name.substring(0, 20)}</h3>
           </Link>
 
-          <p>{product.description.substring(0, 70)}...</p>
+          <p>{product.description.substring(0, 60)}...</p>
 
           <Link className='btn' to={`/cart/${product._id}?qty=${qty}`}>
             add to cart
@@ -48,20 +48,23 @@ export default function Product({ product }) {
 const Wrapper = styled.div`
   margin: 0 auto;
 
-
   .box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
     background: var(--clr-white);
     margin: 0 auto;
     box-shadow: var(--light-shadow);
+   
   }
 
   .box .image {
-    max-height: 100%;
-    max-width: 100%;
     object-fit: contain;
-    padding: 1rem;
+    padding: 0.2rem;
     overflow: hidden;
     position: relative;
+    flex:1;
   }
 
   .heart-container svg {
@@ -69,6 +72,8 @@ const Wrapper = styled.div`
   }
 
   .box .image img {
+    max-height: 200%;
+    max-width: 100%;
     border-radius: 0.5rem;
     object-fit: contain;
     transition: transform 0.8s ease;
@@ -82,16 +87,14 @@ const Wrapper = styled.div`
   }
 
   .heart-container {
-    position: absolute;
-    top: 2.5rem;
-    right: 2.5rem;
-    height: 3rem;
-    width: 3rem;
     display: flex;
+    position: absolute;
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+    top: 0.8rem;
+    right: 1.2rem;
     background: var(--clr-white);
     border-radius: 50%;
     box-shadow: var(--light-shadow);
@@ -105,11 +108,14 @@ const Wrapper = styled.div`
   }
 
   .content {
+    flex: 2;
     padding: 1.2rem;
     padding-top: 0;
   }
 
   .stars {
+    font-size: 1.2rem;
+    padding-top: 1rem;
     padding-bottom: 1rem;
   }
 
@@ -119,44 +125,33 @@ const Wrapper = styled.div`
 
   .content h3 {
     color: var(--clr-blue);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
 
   .content p {
     color: var(--clr-dark-grey);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     line-height: 1;
   }
 
   .btn {
-    font-size: 1.3rem;
-    padding: 0.6rem 1.6rem;
+    font-size: 1.2rem;
+    padding: 0.4rem 1.4rem;
   }
 
   .content .price {
     color: var(--clr-blue);
-    margin-left: 1rem;
-    font-size: 1.4rem;
+    margin-left: 0.8rem;
+    font-size: 1.2rem;
   }
 
-  @media (max-width: 768px) {
+  @media (min-width: 768px) {
     .box {
-      display: flex;
-      flex-direction: row; /* ⬅️ Make layout horizontal */
-      align-items: center;
-      gap: 1rem;
+      flex-direction: column;
     }
-    .box .image {
-      width: 26rem; /* Reduce height for smaller screens */
-      padding: 0.5rem;
-    }
-
     .heart-container {
-      top: -0.8rem;
-      right: -0.8rem;
-    }
-    .num-reviews {
-      display: none;
+      height: 3rem;
+      width: 3rem;
     }
   }
 `
