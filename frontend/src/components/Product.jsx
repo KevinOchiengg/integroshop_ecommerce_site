@@ -32,7 +32,7 @@ export default function Product({ product }) {
             <h3>{product.name.substring(0, 20)}</h3>
           </Link>
 
-          <p>{product.description.substring(0, 60)}...</p>
+          <p>{product.description.substring(0, 70)}...</p>
 
           <Link className='btn' to={`/cart/${product._id}?qty=${qty}`}>
             add to cart
