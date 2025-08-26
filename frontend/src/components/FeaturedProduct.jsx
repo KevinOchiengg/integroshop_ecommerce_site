@@ -41,7 +41,8 @@ const Wrapper = styled.section`
 
   .featured {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    grid-template-columns: 1fr;
+    /* grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); */
     gap: 1.5rem;
   }
 
@@ -51,6 +52,27 @@ const Wrapper = styled.section`
   .aleart {
     color: var(--clr-red);
     text-align: center;
+  }
+
+  /* Small tablets and up (≥600px) */
+  @media (min-width: 600px) {
+    .featured {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Tablets and up (≥768px) */
+  @media (min-width: 768px) {
+    .featured {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* Laptops/desktops (≥1024px) */
+  @media (min-width: 1024px) {
+    .featured {
+      grid-template-columns: repeat(5, 1fr);
+    }
   }
 `
 

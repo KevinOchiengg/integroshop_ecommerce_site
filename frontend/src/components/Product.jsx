@@ -51,12 +51,12 @@ const Wrapper = styled.div`
   .box {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
     gap: 1rem;
     background: var(--clr-white);
     margin: 0 auto;
     box-shadow: var(--light-shadow);
-   
+    
   }
 
   .box .image {
@@ -64,7 +64,7 @@ const Wrapper = styled.div`
     padding: 0.2rem;
     overflow: hidden;
     position: relative;
-    flex:1;
+    flex: 1;
   }
 
   .heart-container svg {
@@ -72,11 +72,12 @@ const Wrapper = styled.div`
   }
 
   .box .image img {
-    max-height: 200%;
     max-width: 100%;
     border-radius: 0.5rem;
     object-fit: contain;
     transition: transform 0.8s ease;
+    height: 20rem; /* ✅ fixed image height for uniform cards */
+    object-fit: contain; /* ✅ keeps quality */
   }
   .heart-container a {
     border-radius: 50%;

@@ -41,7 +41,7 @@ const Sidebar = () => {
       <div className='sidebar'>
         <nav className='sidebar-header'>
           <h2>
-            Integro<span>.</span>
+            Dukawa<span>.</span>
           </h2>
           <button className='close-btn' onClick={closeSidebar}>
             <FaTimes />

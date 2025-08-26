@@ -37,7 +37,7 @@ const Wrapper = styled.section`
   top: 8rem;
   font-family: 'Playfair Display', serif;
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   background: linear-gradient(
       0deg,
       rgba(39, 55, 85, 0.7),
