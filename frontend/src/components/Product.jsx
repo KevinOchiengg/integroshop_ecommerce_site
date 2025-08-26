@@ -115,7 +115,7 @@ const Wrapper = styled.div`
   }
 
   .stars {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
@@ -126,24 +126,24 @@ const Wrapper = styled.div`
 
   .content h3 {
     color: var(--clr-blue);
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   .content p {
     color: var(--clr-dark-grey);
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     line-height: 1;
   }
 
   .btn {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     padding: 0.4rem 1.4rem;
   }
 
   .content .price {
     color: var(--clr-blue);
     margin-left: 0.8rem;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   @media (min-width: 768px) {
