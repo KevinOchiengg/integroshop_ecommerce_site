@@ -65,6 +65,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     position: relative;
     flex: 1;
+    
   }
 
   .heart-container svg {
@@ -72,12 +73,12 @@ const Wrapper = styled.div`
   }
 
   .box .image img {
-    max-width: 100%;
+    width: 100%;
     border-radius: 0.5rem;
     object-fit: contain;
     transition: transform 0.8s ease;
-    height: 20rem; /* ✅ fixed image height for uniform cards */
-    object-fit: contain; /* ✅ keeps quality */
+    height: 20rem; 
+    object-fit: contain; 
   }
   .heart-container a {
     border-radius: 50%;
@@ -93,7 +94,7 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     top: 0.8rem;
     right: 1.2rem;
     background: var(--clr-white);
@@ -115,7 +116,7 @@ const Wrapper = styled.div`
   }
 
   .stars {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
@@ -126,24 +127,24 @@ const Wrapper = styled.div`
 
   .content h3 {
     color: var(--clr-blue);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .content p {
     color: var(--clr-dark-grey);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     line-height: 1;
   }
 
   .btn {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     padding: 0.4rem 1.4rem;
   }
 
   .content .price {
     color: var(--clr-blue);
     margin-left: 0.8rem;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   @media (min-width: 768px) {
