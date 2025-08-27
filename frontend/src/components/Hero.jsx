@@ -82,7 +82,7 @@ const Wrapper = styled.section`
   }
 
   h3 {
-    font-size: 4.5rem;
+    font-size: 6rem;
     line-height: 1.2em;
     margin: 1em 0 0 0;
     color: var(--clr-light-yellow);

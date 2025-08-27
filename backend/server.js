@@ -78,29 +78,38 @@ io.on('connection', (socket) => {
       }
     }
   })
-  socket.on('onLogin', (user) => {
-    const updatedUser = {
+
+socket.on('onLogin', (user) => {
+  const existUser = users.find((x) => x._id === user._id)
+
+  if (existUser) {
+    // 🔑 Preserve chat history
+    existUser.socketId = socket.id
+    existUser.online = true
+    existUser.name = user.name   // keep profile data in sync
+    existUser.isAdmin = user.isAdmin
+  } else {
+    // First time login → create fresh user object
+    users.push({
       ...user,
-      online: true,
       socketId: socket.id,
-      messages: [],
-    }
-    const existUser = users.find((x) => x._id === updatedUser._id)
-    if (existUser) {
-      existUser.socketId = socket.id
-      existUser.online = true
-    } else {
-      users.push(updatedUser)
-    }
-    console.log('Online', user.name)
-    const admin = users.find((x) => x.isAdmin && x.online)
-    if (admin) {
-      io.to(admin.socketId).emit('updateUser', updatedUser)
-    }
-    if (updatedUser.isAdmin) {
-      io.to(updatedUser.socketId).emit('listUsers', users)
-    }
-  })
+      online: true,
+      messages: [], // only empty for new users
+    })
+  }
+
+  // 🔔 Notify admin when a user comes online
+  const admin = users.find((x) => x.isAdmin && x.online)
+  if (admin) {
+    io.to(admin.socketId).emit('updateUser', user)
+  }
+
+  // 🔔 If logged-in user is admin, send them full list
+  if (user.isAdmin) {
+    io.to(socket.id).emit('listUsers', users)
+  }
+})
+
 
   socket.on('onUserSelected', (user) => {
     const admin = users.find((x) => x.isAdmin && x.online)
@@ -112,7 +121,7 @@ io.on('connection', (socket) => {
 
   socket.on('onMessage', (message) => {
     if (message.isAdmin) {
-      const user = users.find((x) => x._id === message._id && x.online)
+      const user = users.find((x) => x._id === message.receiverId && x.online)
       if (user) {
         io.to(user.socketId).emit('message', message)
         user.messages.push(message)
@@ -121,7 +130,7 @@ io.on('connection', (socket) => {
       const admin = users.find((x) => x.isAdmin && x.online)
       if (admin) {
         io.to(admin.socketId).emit('message', message)
-        const user = users.find((x) => x._id === message._id && x.online)
+        const user = users.find((x) => x._id === message.senderId && x.online)
         user.messages.push(message)
       } else {
         io.to(socket.id).emit('message', {
@@ -132,7 +141,6 @@ io.on('connection', (socket) => {
     }
   })
 })
-
 
 httpServer.listen(port, () => {
   console.log(`Serve at http://localhost:${port}`)
