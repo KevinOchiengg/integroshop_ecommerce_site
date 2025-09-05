@@ -7,128 +7,120 @@ import { BiMessageDetail } from 'react-icons/bi'
 import { IoIosArrowRoundBack, IoMdSend } from 'react-icons/io'
 import { FaRegUserCircle } from 'react-icons/fa'
 
-let allUsers = []
-let allMessages = []
-let allSelectedUser = {}
+// const ENDPOINT =
+//   window.location.host.indexOf('localhost') >= 0
+//     ? 'http://127.0.0.1:5000'
+//     : window.location.host
 const ENDPOINT =
-  window.location.host.indexOf('localhost') >= 0
-    ? 'http://127.0.0.1:5000'
-    : window.location.host
+  window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:5000' // local dev backend
+    : `${window.location.protocol}//${window.location.host}`; // use https://yourdomain.com in production
+
 
 export default function SupportPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const closeSidebar = () => {
-    setIsSidebarOpen(false)
-  }
-
-  const openSidebar = () => {
-    setIsSidebarOpen(true)
-  }
-
   const [selectedUser, setSelectedUser] = useState({})
   const [socket, setSocket] = useState(null)
-  const uiMessagesRef = useRef(null)
   const [messageBody, setMessageBody] = useState('')
   const [messages, setMessages] = useState([])
   const [users, setUsers] = useState([])
+
+  const uiMessagesRef = useRef(null)
   const userSignin = useSelector((state) => state.userSignin)
   const { userInfo } = userSignin
 
+  // Auto-scroll when new messages arrive
   useEffect(() => {
     if (uiMessagesRef.current) {
-      uiMessagesRef.current.scrollBy({
-        top: uiMessagesRef.current.clientHeight,
-        left: 0,
-        behavior: 'smooth',
-      })
+      uiMessagesRef.current.scrollTop = uiMessagesRef.current.scrollHeight
     }
+  }, [messages])
 
-    if (!socket) {
-      const sk = socketIOClient(ENDPOINT)
-      setSocket(sk)
-      sk.emit('onLogin', {
-        _id: userInfo._id,
-        name: userInfo.name,
-        isAdmin: userInfo.isAdmin,
-      })
-      sk.on('message', (data) => {
-        if (allSelectedUser._id === data._id) {
-          allMessages = [...allMessages, data]
-        } else {
-          const existUser = allUsers.find((user) => user._id === data._id)
-          if (existUser) {
-            allUsers = allUsers.map((user) =>
-              user._id === existUser._id ? { ...user, unread: true } : user
-            )
-            setUsers(allUsers)
-          }
+  // Setup socket once
+  useEffect(() => {
+    const sk = socketIOClient(ENDPOINT, { transports: ['websocket'] })
+    setSocket(sk)
+
+    sk.emit('onLogin', {
+      _id: userInfo._id,
+      name: userInfo.name,
+      isAdmin: userInfo.isAdmin,
+    })
+
+    // Listen for messages
+    sk.on('message', (data) => {
+      if (selectedUser._id === data._id) {
+        setMessages((prev) => [...prev, data])
+      } else {
+        setUsers((prev) =>
+          prev.map((u) => (u._id === data._id ? { ...u, unread: true } : u))
+        )
+      }
+    })
+
+    // User updates
+    sk.on('updateUser', (updatedUser) => {
+      setUsers((prev) => {
+        const exists = prev.find((u) => u._id === updatedUser._id)
+        if (exists) {
+          return prev.map((u) => (u._id === updatedUser._id ? updatedUser : u))
         }
-        setMessages(allMessages)
+        return [...prev, updatedUser]
       })
-      sk.on('updateUser', (updatedUser) => {
-        const existUser = allUsers.find((user) => user._id === updatedUser._id)
-        if (existUser) {
-          allUsers = allUsers.map((user) =>
-            user._id === existUser._id ? updatedUser : user
-          )
-          setUsers(allUsers)
-        } else {
-          allUsers = [...allUsers, updatedUser]
-          setUsers(allUsers)
-        }
-      })
-      sk.on('listUsers', (updatedUsers) => {
-        allUsers = updatedUsers
-        setUsers(allUsers)
-      })
-      sk.on('selectUser', (user) => {
-        allMessages = user.messages
-        setMessages(allMessages)
-      })
+    })
+
+    // List of users
+    sk.on('listUsers', (updatedUsers) => {
+      setUsers(updatedUsers)
+    })
+
+    // Load selected user messages
+    sk.on('selectUser', (user) => {
+      setMessages(user.messages || [])
+    })
+
+    // Clean up socket on unmount
+    return () => {
+      sk.disconnect()
     }
-  }, [messages, socket, users, userInfo])
+  }, [userInfo, selectedUser._id])
 
   const selectUser = (user) => {
-    allSelectedUser = user
-    setSelectedUser(allSelectedUser)
-    const existUser = allUsers.find((x) => x._id === user._id)
-    if (existUser) {
-      allUsers = allUsers.map((x) =>
-        x._id === existUser._id ? { ...x, unread: false } : x
-      )
-      setUsers(allUsers)
-    }
+    setSelectedUser(user)
+    setUsers((prev) =>
+      prev.map((u) => (u._id === user._id ? { ...u, unread: false } : u))
+    )
     socket.emit('onUserSelected', user)
+    setIsSidebarOpen(false)
   }
 
   const submitHandler = (e) => {
     e.preventDefault()
-    if (!messageBody.trim()) {
-      alert('Error. Please type message.')
-    } else {
-      allMessages = [...allMessages, { body: messageBody, name: userInfo.name }]
-      setMessages(allMessages)
-      setMessageBody('')
-      setTimeout(() => {
-        socket.emit('onMessage', {
-          body: messageBody,
-          name: userInfo.name,
-          isAdmin: userInfo.isAdmin,
-          _id: selectedUser._id,
-        })
-      }, 1000)
-    }
+    if (!messageBody.trim()) return
+
+    const newMsg = { body: messageBody, name: userInfo.name }
+    setMessages((prev) => [...prev, newMsg])
+    setMessageBody('')
+
+    socket.emit('onMessage', {
+      body: messageBody,
+      name: userInfo.name,
+      isAdmin: userInfo.isAdmin,
+      senderId: userInfo._id,
+      receiverId: selectedUser._id,
+    })
   }
 
   return (
     <Wrapper>
       <div className='container section-center'>
+        {/* Sidebar */}
         <div
           className={`${isSidebarOpen ? 'sidebar show-sidebar' : 'sidebar'}`}
         >
           <div className='sidebar-header'>
             <h2>chat with</h2>
-            <IoIosArrowRoundBack onClick={closeSidebar} />
+            <IoIosArrowRoundBack onClick={() => setIsSidebarOpen(false)} />
           </div>
           <div className='users-list-container'>
             {users
@@ -136,29 +128,34 @@ export default function SupportPage() {
               .map((user) => (
                 <article
                   className='single-user-wrapper'
-                  onClick={() => selectUser(user, setIsSidebarOpen(false))}
-                  key={userInfo._id}
+                  onClick={() => selectUser(user)}
+                  key={user._id}
                 >
                   <FaRegUserCircle />
                   <div className='info'>
                     <h3>{user.name}</h3>
                     <span>{user.online ? 'online' : ''}</span>
+                    {user.unread && <strong> • New</strong>}
                   </div>
                 </article>
               ))}
           </div>
         </div>
+
+        {/* Chat content */}
         <div className='content'>
           <header className='content-header'>
-            {selectedUser.online ? <FaRegUserCircle /> : ''}
-
+            {selectedUser.online && <FaRegUserCircle />}
             <div className='info'>
               <h3>{selectedUser.name}</h3>
               <span>{selectedUser.online ? 'online' : ''}</span>
             </div>
-
-            <BiMessageDetail className='open' onClick={openSidebar} />
+            <BiMessageDetail
+              className='open'
+              onClick={() => setIsSidebarOpen(true)}
+            />
           </header>
+
           {!selectedUser._id ? (
             <Message
               message='no messages found. please select an online user to chat with'
@@ -175,7 +172,7 @@ export default function SupportPage() {
                 >
                   <p className='msg'>{msg.body}</p>
                   <span className='time'>
-                    {new Date().getHours() + ':' + new Date().getMinutes()}
+                    {new Date().getHours()}:{new Date().getMinutes()}
                   </span>
                 </li>
               ))}
@@ -189,7 +186,6 @@ export default function SupportPage() {
               onChange={(e) => setMessageBody(e.target.value)}
               type='text'
             />
-
             <button type='submit'>
               <IoMdSend className='send-btn' />
             </button>
@@ -403,3 +399,7 @@ const Wrapper = styled.section`
     }
   }
 `
+
+
+
+

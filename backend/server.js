@@ -65,6 +65,7 @@ const port = process.env.PORT || 5000
 const httpServer = http.Server(app)
 const io = new Server(httpServer, { cors: { origin: '*' } })
 const users = []
+
 io.on('connection', (socket) => {
   console.log('connection', socket.id)
   socket.on('disconnect', () => {
